@@ -80,7 +80,10 @@ CAMLprim value q_egal(value val1, value val2)
 	CAMLparam2(val1, val2);
 	CAMLlocal1(val);
 	int result = mpq_equal(*Mpq_val(val1), *Mpq_val(val2));
-	val = Val_bool(result);
+	if (result == 0)
+		val = Val_false;
+	else
+		val = Val_true;
 	CAMLreturn(val);
 }
 //Fonctions arithmétiques :
