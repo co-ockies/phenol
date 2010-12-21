@@ -1,4 +1,7 @@
 open Gmp
-type n_t = Entier of z_t | Frac of q_t
-val ( + ) : n_t -> n_t -> n_t
-val show : n_t -> string
+type num = Ratio of rational | Undefined
+
+val fraction : int -> int -> num
+val entier : int -> num
+val ( + ) : num -> num -> num
+val show : num -> string

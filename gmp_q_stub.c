@@ -61,19 +61,26 @@ CAMLprim value q_show(value bloc)
 	CAMLreturn(val);
 }
 
-//Créer un q égal à un z
-
-mpz_t *Mpz_val(value);//Definition d'une fonction externe utilisée
-//par q_of_z .
-
-CAMLprim value q_of_z(value bloc)
+//Fonctions de comparaison :
+/////////////////////////////////////////
+CAMLprim value q_sup_egal(value val1, value val2)
 {
-	CAMLparam1(bloc);
+	CAMLparam2(val1, val2);
 	CAMLlocal1(val);
-	mpz_t* z = Mpz_val(bloc);
-	mpq_t* q = ptr_mpq();
-	mpq_set_z(*q, *z);
-	val = Val_mpq(q);
+	int result = mpq_cmp(*Mpq_val(val1), *Mpq_val(val2));
+	if (result >= 0)
+		val = Val_true;
+	else
+		val = Val_false;
+	CAMLreturn(val);
+}
+
+CAMLprim value q_egal(value val1, value val2)
+{
+	CAMLparam2(val1, val2);
+	CAMLlocal1(val);
+	int result = mpq_equal(*Mpq_val(val1), *Mpq_val(val2));
+	val = Val_bool(result);
 	CAMLreturn(val);
 }
 //Fonctions arithmétiques :

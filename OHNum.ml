@@ -1,12 +1,13 @@
 open Gmp
 
-type n_t = Entier of z_t | Frac of q_t
+type num = Ratio of rational | Undefined
 
-let ( + ) n1 n2 = match (n1, n2) with
-        | (Entier a, Entier b) -> Entier (z_add a b)
-        | (Frac a, Frac b) -> Frac (q_add a b)
-        | (Entier a, Frac b) -> Frac (q_add (q_of_z a) b)
-        | (Frac a, Entier b) -> Frac (q_add a (q_of_z b));;
-let show n = match n with
-        | Entier a -> z_show a
-        | Frac a -> q_show a;;
+let fraction a b = Ratio (q a b);;
+let entier a = Ratio (z a);;
+let ( + ) a b = match (a, b) with
+        | (Undefined, _) -> Undefined
+        | (_, Undefined) -> Undefined
+        | (Ratio x, Ratio y) -> Ratio (q_add x y);;
+let show a = match a with
+        | Undefined -> "Undefined"
+        | Ratio x -> q_show x;;
