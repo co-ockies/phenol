@@ -23,7 +23,7 @@ let ( * ) a b = match (a, b) with
 let ( / ) a b = match (a, b) with
         | (Undefined, _) -> Undefined
         | (_, Undefined) -> Undefined
-        | (Ratio x, Ratio y) -> Ratio (q_div x y);;
+        | (Ratio x, Ratio y) -> if q_egal y (z 0) then Undefined else Ratio (q_div x y);;
 
 let (>= ) a b = match (a, b) with
         | (Undefined, _) -> false
