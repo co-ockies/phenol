@@ -1,9 +1,14 @@
 open Gmp
 
-type num = Ratio of rational | Undefined
+type num = Ratio of rational (*| Sub of num * num | Add of num * num
+        | Mul of num * num | Div of num * num *)| Undefined
 
 let fraction a b = Ratio (q a b);;
 let entier a = Ratio (z a);;
+
+let q_of_num a = match a with
+        | Undefined -> z 0
+        | Ratio x -> x;;
 
 let ( + ) a b = match (a, b) with
         | (Undefined, _) -> Undefined
@@ -53,4 +58,8 @@ let ( > ) a b = match (a, b) with
 let show a = match a with
         | Undefined -> "Undefined"
         | Ratio x -> q_show x;;
+
+let approx_of_num a = match a with
+        | Undefined -> approx_of_q (z 0)
+        | Ratio x -> approx_of_q x;;
 

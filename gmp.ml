@@ -10,3 +10,12 @@ external q_sup_egal : rational -> rational -> bool = "q_sup_egal"
 external q_egal : rational -> rational -> bool = "q_egal"
 
 let z a = q a 1;;
+
+type approx;;
+external approx_of_q : rational -> int -> approx = "f_create"
+external approx_show : approx -> string = "f_show"
+external approx_add : approx -> approx -> approx = "f_add"
+external approx_sub : approx -> approx -> approx = "f_sub"
+external approx_mul : approx -> approx -> approx = "f_mul"
+external approx_div : approx -> approx -> approx = "f_div"
+external approx_neg : approx -> approx = "f_oppos"
