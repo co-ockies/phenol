@@ -1,65 +1,50 @@
-open Gmp
+open Rational
 
-type num = Ratio of rational (*| Sub of num * num | Add of num * num
-        | Mul of num * num | Div of num * num *)| Undefined
+type expr = Ratio of rational | Sub of expr * expr | Add of expr * expr
+        | Mul of expr * expr | Div of expr * expr | Undefined
 
 let fraction a b = Ratio (q a b);;
 let entier a = Ratio (z a);;
 
-let q_of_num a = match a with
+let expr_to_rational a = match a with
         | Undefined -> z 0
-        | Ratio x -> x;;
+        | Ratio x -> x
+        | _ -> z 0;;
 
-let ( + ) a b = match (a, b) with
+let ( +$ ) a b = match (a, b) with
         | (Undefined, _) -> Undefined
         | (_, Undefined) -> Undefined
-        | (Ratio x, Ratio y) -> Ratio (q_add x y);;
+        | (Ratio x, Ratio y) -> Ratio (x +/ y)
+        | (x, y) -> Add (x, y);;
 
-let ( - ) a b = match (a, b) with
+let ( -$ ) a b = match (a, b) with
         | (Undefined, _) -> Undefined
         | (_, Undefined) -> Undefined
-        | (Ratio x, Ratio y) -> Ratio (q_sub x y);;
+        | (Ratio x, Ratio y) -> Ratio (x +/ y)
+        | (x, y) -> Sub (x, y);;
 
-let ( * ) a b = match (a, b) with
+let ( *$ ) a b = match (a, b) with
         | (Undefined, _) -> Undefined
         | (_, Undefined) -> Undefined
-        | (Ratio x, Ratio y) -> Ratio (q_mul x y);;
+        | (Ratio x, Ratio y) -> Ratio (x */ y)
+        | (x, y) -> Mul (x, y);;
 
-let ( / ) a b = match (a, b) with
+let ( /$ ) a b = match (a, b) with
         | (Undefined, _) -> Undefined
         | (_, Undefined) -> Undefined
-        | (Ratio x, Ratio y) -> if q_egal y (z 0) then Undefined else Ratio (q_div x y);;
+        | (Ratio x, Ratio y) -> if q_egal y (z 0) then Undefined else Ratio (x // y)
+        | (x, y) -> Div (x, y);;
 
-let (>= ) a b = match (a, b) with
-        | (Undefined, _) -> false
-        | (_, Undefined) -> false
-        | (Ratio x, Ratio y) -> q_sup_egal x y;;
 
-let ( = ) a b = match (a, b) with
-        | (Undefined, _) -> false
-        | (_, Undefined) -> false
-        | (Ratio x, Ratio y) -> q_egal x y;;
-
-let ( < ) a b = match (a, b) with
-        | (Undefined, _) -> false
-        | (_, Undefined) -> false
-        | (Ratio x, Ratio y) -> not (q_sup_egal x y);;
-
-let (<= ) a b = match (a, b) with
-        | (Undefined, _) -> false
-        | (_, Undefined) -> false
-        | (Ratio x, Ratio y) -> (q_egal x y) || (not (q_sup_egal x y));;
-
-let ( > ) a b = match (a, b) with
-        | (Undefined, _) -> false
-        | (_, Undefined) -> false
-        | (Ratio x, Ratio y) -> (q_sup_egal x y) && (not (q_egal x y));;
-
-let show a = match a with
+let rec expr_to_string a = match a with
         | Undefined -> "Undefined"
-        | Ratio x -> q_show x;;
+        | Ratio x -> q_to_string x
+        | Add (x, y) -> (expr_to_string x) ^ "+" ^ (expr_to_string y)
+        | Sub (x, y) -> (expr_to_string x) ^ "-" ^ (expr_to_string y)
+        | Mul (x, y) -> (expr_to_string x) ^ "*" ^ (expr_to_string y)
+        | Div (x, y) -> (expr_to_string x) ^ "/" ^ (expr_to_string y);;
 
-let approx_of_num a = match a with
-        | Undefined -> approx_of_q (z 0)
-        | Ratio x -> approx_of_q x;;
-
+let expr_to_approx a prec = match a with
+        | Undefined -> q_to_approx (z 0) prec
+        | Ratio x -> q_to_approx x prec
+        | _ -> q_to_approx (z 0) prec;;

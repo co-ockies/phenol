@@ -1,16 +1,14 @@
-open Gmp
-type num = Ratio of rational | Undefined
+open Rational
+type expr = Ratio of rational | Sub of expr * expr | Add of expr * expr
+        | Mul of expr * expr | Div of expr * expr | Undefined
 
-val fraction : int -> int -> num
-val entier : int -> num
-val q_of_num : num -> rational
-val ( + ) : num -> num -> num
-val ( - ) : num -> num -> num
-val ( * ) : num -> num -> num
-val ( / ) : num -> num -> num
-val ( > ) : num -> num -> bool
-val ( < ) : num -> num -> bool
-val ( = ) : num -> num -> bool
-val (>= ) : num -> num -> bool
-val (<= ) : num -> num -> bool
-val show : num -> string
+val fraction : int -> int -> expr
+val entier : int -> expr
+val expr_to_rational : expr -> rational
+val expr_to_string : expr -> string
+val expr_to_approx : expr -> int -> approx
+val ( +$ ) : expr -> expr -> expr
+val ( -$ ) : expr -> expr -> expr
+val ( *$ ) : expr -> expr -> expr
+val ( /$ ) : expr -> expr -> expr
+

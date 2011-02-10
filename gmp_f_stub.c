@@ -46,7 +46,7 @@ CAMLprim value f_create(value val, value prec)
 	CAMLparam2(val, prec);
 	CAMLlocal1(bloc);
 	mpf_t* f = ptr_mpf();
-	mpf_set_prec(*f, Long_val(prec));
+	mpf_set_prec(*f, Long_val(prec) * 4);
 	mpf_set_q(*f, *Mpq_val(val));
 	bloc = Val_mpf(f);
 	CAMLreturn(bloc);
@@ -58,7 +58,7 @@ CAMLprim value f_show(value bloc)
 	mp_exp_t expo = 0;
 	CAMLparam1(bloc);
 	CAMLlocal1(val);
-	char* text = mpf_get_str(NULL, &expo, 10, 0, *Mpf_val(bloc));
+	char* text = mpf_get_str(NULL, &expo, 10, mpf_get_prec(*Mpf_val(bloc)) / 4, *Mpf_val(bloc));
 	char* text_final = malloc(sizeof(char) * (strlen(text) + 11));
 	sprintf(text_final, "%se%ld", text, (long) expo);
 	val = caml_copy_string(text_final);
